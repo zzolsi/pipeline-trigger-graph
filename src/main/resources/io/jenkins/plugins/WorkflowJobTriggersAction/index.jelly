@@ -1,0 +1,73 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout" xmlns:st="jelly:stapler">
+    <l:layout title="Pipeline Trigger">
+		<l:side-panel>  
+			<st:include page="sidepanel.jelly" it="${it.job}" optional="true" /> 
+		</l:side-panel>
+        <l:main-panel>
+            <h1>
+                Triggers of Pipeline '${it.job.fullDisplayName}'
+            </h1>
+            <img src="graph.png" usemap="#map" />
+          	<p>
+          		<a href="graph.gv">Download source</a>
+          	</p>   
+            
+            <h2>Upstream Jobs</h2>
+            <j:choose>
+            	<j:when test="${it.upstreamJobs.size() > 0}">
+		            <ul>
+		            	<j:forEach items="${it.upstreamJobs}" var="job">
+		            		<li>
+		            			<!-- TODO: do not use absoluteUrl here! -->
+		           	 			<a href="${job.absoluteUrl}">${job.name}</a>
+		            		</li>
+		            	</j:forEach>
+		            </ul>
+            	</j:when>
+            	<j:otherwise>
+            		This job is not triggered by other jobs.
+            	</j:otherwise>
+            </j:choose>
+            
+            <h2>Downstream Jobs</h2>
+            <j:choose>
+            	<j:when test="${it.downstreamJobs.size() > 0}">
+		            <ul>
+		            	<j:forEach items="${it.downstreamJobs}" var="job">
+		            		<li>
+		            			<!-- TODO: do not use absoluteUrl here! -->
+		           	 			<a href="${job.absoluteUrl}">${job.name}</a>
+		            		</li>
+		            	</j:forEach>
+		            </ul>
+            	</j:when>
+            	<j:otherwise>
+            		No other jobs are triggered by this job.
+            	</j:otherwise>
+            </j:choose>
+            
+            <!-- 
+            <h2>Upstream triggers: </h2>
+            ${it.triggers}
+            <ul>
+            	<j:forEach items="${it.job.triggers}" var="trigger">
+            		<li>
+            			${trigger.value}
+            		</li>
+            	</j:forEach>
+            </ul>
+            
+            <h2>Upstream Projects</h2>
+            ${it.upstreamProjects}
+            
+            <h2>Dot-graph</h2>
+            ${it.upstreamGraph}
+            <pre>
+            	${it.dot}
+            </pre>
+             -->
+        </l:main-panel>
+    </l:layout>
+</j:jelly>
+
