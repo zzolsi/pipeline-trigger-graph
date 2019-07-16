@@ -1,0 +1,30 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout" xmlns:st="jelly:stapler">
+    <l:layout title="Project Dependencies">
+		<l:side-panel>  
+			<st:include page="sidepanel.jelly" it="${it.run}" optional="true" /> 
+		</l:side-panel>
+        <l:main-panel>
+            <h1>
+                Causes of Run ${it.run.fullDisplayName}
+            </h1>
+            <img src="graph.png"></img>
+          	<p>
+          		<a href="graph.gv">Download source</a>
+          	</p>  
+            
+            <h2>Causes:</h2>
+            <ul>
+                <j:forEach items="${it.upstreamCauses}" var="upstreamCause">
+                	<li>
+                		${upstreamCause.shortDescription}
+                	</li>
+				</j:forEach>
+            </ul>
+            <pre>
+            ${it.dotFromUpstream}
+            </pre>
+        </l:main-panel>
+    </l:layout>
+</j:jelly>
+
