@@ -1,0 +1,52 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout" xmlns:st="jelly:stapler">
+    <l:layout title="Pipeline Trigger">
+		<l:side-panel>  
+			<st:include page="sidepanel.jelly" it="${it.view}" optional="true" /> 
+		</l:side-panel>
+        <l:main-panel>
+            <h1>
+                Job Triggers Overview
+            </h1>  
+            <img src="graph.png" usemap="#map" />
+		    <map name="map" id="map">
+		    </map>
+		  	<p>
+		  		<a href="graph.gv">Download source</a>
+		  	</p>   
+		    <script>
+		    	var mapNode = document.getElementById("map");
+		    	var xhr = new XMLHttpRequest();
+		    	xhr.onload = function(e) {
+					if (xhr.readyState === xhr.DONE) {
+					    if (xhr.status === 200) {
+					        mapNode.innerHTML = xhr.response;
+					    }
+					}
+		    	}
+		    	xhr.open("GET", "graph.cmapx", true);
+		    	xhr.send();
+		    </script>
+
+          	<h2>Entries</h2>
+            <ul>
+            	<j:forEach items="${it.workflowGraph.entries}" var="job">
+            		<li>
+            			<!-- TODO: do not use absoluteUrl here! -->
+           	 			<a href="${job.absoluteUrl}">${job.fullName}</a>
+            		</li>
+            	</j:forEach>
+            </ul>
+          	<h2>Exits</h2>
+            <ul>
+            	<j:forEach items="${it.workflowGraph.exits}" var="job">
+            		<li>
+            			<!-- TODO: do not use absoluteUrl here! -->
+           	 			<a href="${job.absoluteUrl}">${job.fullName}</a>
+            		</li>
+            	</j:forEach>
+            </ul>     
+        </l:main-panel>
+    </l:layout>
+</j:jelly>
+

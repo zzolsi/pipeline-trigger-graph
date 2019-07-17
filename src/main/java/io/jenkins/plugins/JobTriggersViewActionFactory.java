@@ -23,24 +23,19 @@
  */
 package io.jenkins.plugins;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import hudson.Extension;
 import hudson.model.Action;
-import hudson.model.Run;
-import jenkins.model.TransientActionFactory;
+import hudson.model.TransientViewActionFactory;
+import hudson.model.View;
 
 @Extension
-public class RunTriggersActionFactory extends TransientActionFactory<Run> {
+public class JobTriggersViewActionFactory extends TransientViewActionFactory {
 
 	@Override
-	public Class<Run> type() {
-		return Run.class;
-	}
-
-	@Override
-	public Collection<? extends Action> createFor(Run target) {
-        return Collections.singleton(new RunTriggersAction(target)); 
+	public List<Action> createFor(View v) {
+		return Collections.singletonList(new JobTriggersViewAction(v));
 	}
 }

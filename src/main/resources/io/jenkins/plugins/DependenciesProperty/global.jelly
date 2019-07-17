@@ -3,15 +3,37 @@
 	xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson"
 	xmlns:f="/lib/form">
 	<f:section title="${%Dependency Graph Configuration}">
-		<f:entry title="${%Path to the VizGraph-Dot Executable}"
+		<f:entry title="${%Path to the GraphViz-Dot Executable}"
 			field="dotExe">
-			<f:textbox />
+			<f:textbox default="${dotExeOrDefault}" />
 		</f:entry>
-		<f:entry title="${%Draw Buildstatus-balls}" field="drawBalls">
+		<f:entry title="${%Hide disabled Jobs}" field="hideDisabled">
 			<f:checkbox />
+		</f:entry>
+		<f:entry title="${%Draw graph from left to right}" field="leftToRightLayout">
+			<f:checkbox default="true"/>
+		</f:entry>
+		<f:entry title="${%Count triggers transitively}" field="countTriggersTransitively">
+			<f:checkbox/>
+		</f:entry>		
+		<f:entry title="${%Show a linear upstream of a project }" field="linearUpstreamOfProject">
+			<f:checkbox/>
+		</f:entry>
+		<f:entry title="${%Line width of all incident edges of a selected node }" field="selectedEdgeWidth">
+			<f:number min="1" max="10"/>
+		</f:entry>
+		<!--  
+		<f:entry title="${%Draw Buildstatus-balls}" field="drawBalls">
+			<f:checkbox default="false"/>
 		</f:entry>
 		<f:entry title="${%Path Jenkins-Icons}" field="imagePath">
 			<f:textbox />
-		</f:entry>
+		</f:entry> 
+	    <f:optionalBlock title="${%Draw Buildstatus-balls}" name="drawBalls" field="drawBalls">
+			<f:entry title="${%Path Jenkins-Icons}" name="imagePath" field="imagePath">
+				<f:textbox />
+			</f:entry>
+	    </f:optionalBlock> 
+	    -->
 	</f:section>
 </j:jelly>

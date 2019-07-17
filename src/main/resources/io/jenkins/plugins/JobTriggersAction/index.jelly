@@ -1,0 +1,67 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout" xmlns:st="jelly:stapler">
+    <l:layout title="Pipeline Trigger">
+		<l:side-panel>  
+			<st:include page="sidepanel.jelly" it="${it.job}" optional="true" /> 
+		</l:side-panel>
+        <l:main-panel>
+            <h1>
+                Triggers of Job '${it.job.fullDisplayName}'
+            </h1>    
+            <img src="graph.png" usemap="#map" />
+		    <map name="map" id="map">
+		    </map>
+		  	<p>
+		  		<a href="graph.gv">Download source</a>
+		  	</p>   
+		    <script>
+		    	var mapNode = document.getElementById("map");
+		    	var xhr = new XMLHttpRequest();
+		    	xhr.onload = function(e) {
+					if (xhr.readyState === xhr.DONE) {
+					    if (xhr.status === 200) {
+					        mapNode.innerHTML = xhr.response;
+					    }
+					}
+		    	}
+		    	xhr.open("GET", "graph.cmapx", true);
+		    	xhr.send();
+		    </script>
+            
+            <h2>Upstream Jobs</h2>
+            <j:choose>
+            	<j:when test="${it.upstreamJobs.size() > 0}">
+		            <ul>
+		            	<j:forEach items="${it.upstreamJobs}" var="job">
+		            		<li>
+		            			<!-- TODO: do not use absoluteUrl here! -->
+		           	 			<a href="${job.absoluteUrl}">${job.fullName}</a>
+		            		</li>
+		            	</j:forEach>
+		            </ul>
+            	</j:when>
+            	<j:otherwise>
+            		This job is not triggered by other jobs.
+            	</j:otherwise>
+            </j:choose>
+            
+            <h2>Downstream Jobs</h2>
+            <j:choose>
+            	<j:when test="${it.downstreamJobs.size() > 0}">
+		            <ul>
+		            	<j:forEach items="${it.downstreamJobs}" var="job">
+		            		<li>
+		            			<!-- TODO: do not use absoluteUrl here! -->
+		           	 			<a href="${job.absoluteUrl}">${job.fullName}</a>
+		            		</li>
+		            	</j:forEach>
+		            </ul>
+            	</j:when>
+            	<j:otherwise>
+            		No other jobs are triggered by this job.
+            	</j:otherwise>
+            </j:choose>
+        </l:main-panel>
+    </l:layout>
+</j:jelly>
+

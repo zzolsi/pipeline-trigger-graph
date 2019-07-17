@@ -8,22 +8,25 @@
             <h1>
                 Causes of Run ${it.run.fullDisplayName}
             </h1>
-            <img src="graph.png"></img>
-          	<p>
-          		<a href="graph.gv">Download source</a>
-          	</p>  
-            
-            <h2>Causes:</h2>
-            <ul>
-                <j:forEach items="${it.upstreamCauses}" var="upstreamCause">
-                	<li>
-                		${upstreamCause.shortDescription}
-                	</li>
-				</j:forEach>
-            </ul>
-            <pre>
-            ${it.dotFromUpstream}
-            </pre>
+		    <img src="graph.png" usemap="#map" />
+		    <map name="map" id="map">
+		    </map>
+		  	<p>
+		  		<a href="graph.gv">Download source</a>
+		  	</p>   
+		    <script>
+		    	var mapNode = document.getElementById("map");
+		    	var xhr = new XMLHttpRequest();
+		    	xhr.onload = function(e) {
+					if (xhr.readyState === xhr.DONE) {
+					    if (xhr.status === 200) {
+					        mapNode.innerHTML = xhr.response;
+					    }
+					}
+		    	}
+		    	xhr.open("GET", "graph.cmapx", true);
+		    	xhr.send();
+		    </script>
         </l:main-panel>
     </l:layout>
 </j:jelly>

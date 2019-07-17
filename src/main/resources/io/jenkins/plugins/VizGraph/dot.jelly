@@ -1,0 +1,22 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout" xmlns:st="jelly:stapler">
+    <img src="graph.png" usemap="#map" />
+    <map name="map" id="map">
+    </map>
+  	<p>
+  		<a href="graph.gv">Download source</a>
+  	</p>   
+    <script>
+    	var mapNode = document.getElementById("map");
+    	var xhr = new XMLHttpRequest();
+    	xhr.onload = function(e) {
+			if (xhr.readyState === xhr.DONE) {
+			    if (xhr.status === 200) {
+			        mapNode.innerHTML = xhr.response;
+			    }
+			}
+    	}
+    	xhr.open("GET", "graph.cmapx", true);
+    	xhr.send();
+    </script>
+</j:jelly>

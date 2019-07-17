@@ -1,4 +1,4 @@
 <?jelly escape-by-default='true'?>
 <div>
-    TODO
+    Shows the dependency graph of Jenkins' pipeline jobs and freestyle projects to optimize your build setup
 </div>

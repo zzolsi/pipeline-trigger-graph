@@ -23,58 +23,75 @@
  */
 package io.jenkins.plugins;
 
+import hudson.model.AbstractProject;
+import hudson.model.Action;
+import hudson.model.Job;
+import io.jenkins.plugins.model.wrapper.ProjectWrapper;
+import io.jenkins.plugins.model.wrapper.JobWrapper;
+import io.jenkins.plugins.model.wrapper.WorkflowJobWrapper;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-
+import java.util.Set;
 import javax.servlet.http.HttpServletResponse;
+
+import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
-import hudson.model.Action;
-import hudson.model.Run;
+public class JobTriggersAction implements Action {
 
-public class RunTriggersAction implements Action {
-
-	private Run run;
-	private RunTriggerGraph graph;
+	private JobWrapper jobWrapper;
+	private JobGraph jobGraph;
 	
-	public RunTriggersAction(Run run) {
-		this.run = run;
-		this.graph = new RunTriggerGraph(run);
+	public JobTriggersAction(Job target) {
+		this.jobWrapper = target instanceof WorkflowJob ? 
+				new WorkflowJobWrapper((WorkflowJob)target) : 
+				new ProjectWrapper((AbstractProject)target);
+		this.jobGraph = new JobGraph();
+		this.jobGraph.removeUnconnectedNodes(jobWrapper);
+	}
+	
+	public String getDot() {
+		return jobGraph.getDotString(jobWrapper);
 	}
 	
 	public void doDynamic(StaplerRequest req, StaplerResponse res) throws IOException, InterruptedException {
 		String path = req.getRestOfPath();
 		if (path.startsWith("/graph.")) {
 			String extension = path.substring(path.lastIndexOf('.')+1);
-			String dot = graph.getDot();
+			String dot = jobGraph.getDotString(jobWrapper);
 			GraphViz.runDot(res.getCompressedOutputStream(req), new ByteArrayInputStream(dot.getBytes(StandardCharsets.UTF_8)), extension);	
 		} else {
 			res.sendError(HttpServletResponse.SC_NOT_FOUND);
 		}
 	}
 
-	public Run getRun() {
-		return run;
+	public Set<JobWrapper> getUpstreamJobs() {
+		return jobGraph.getUpstreamOfJob(jobWrapper);
 	}
 
-	public void setRun(Run run) {
-		this.run = run;
+	public Set<JobWrapper> getDownstreamJobs() {
+		return jobGraph.getDownstreamOfJob(jobWrapper);
 	}
 
 	@Override
 	public String getIconFileName() {
-        return "clipboard.png";
+		return "clipboard.png";
 	}
 
 	@Override
 	public String getDisplayName() {
-        return "Run Triggers";
+		return "Triggers Graph";
 	}
 
 	@Override
 	public String getUrlName() {
-        return "triggers";
+		return "triggers";
+	}
+
+	public Job getJob() {
+		return jobWrapper.getJob();
 	}
 }

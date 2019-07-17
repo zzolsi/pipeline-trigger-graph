@@ -28,53 +28,63 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import javax.servlet.http.HttpServletResponse;
+
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
 import hudson.model.Action;
-import hudson.model.Run;
+import hudson.model.View;
 
-public class RunTriggersAction implements Action {
-
-	private Run run;
-	private RunTriggerGraph graph;
+public class JobTriggersViewAction implements Action {
 	
-	public RunTriggersAction(Run run) {
-		this.run = run;
-		this.graph = new RunTriggerGraph(run);
+	private View view;
+	private JobGraph jobGraph;
+
+	public JobTriggersViewAction(View view) {
+		this.setView(view);
+		this.setWorkflowGraph(new JobGraph());
 	}
 	
 	public void doDynamic(StaplerRequest req, StaplerResponse res) throws IOException, InterruptedException {
 		String path = req.getRestOfPath();
 		if (path.startsWith("/graph.")) {
 			String extension = path.substring(path.lastIndexOf('.')+1);
-			String dot = graph.getDot();
+			String dot = jobGraph.getDotString(null);
 			GraphViz.runDot(res.getCompressedOutputStream(req), new ByteArrayInputStream(dot.getBytes(StandardCharsets.UTF_8)), extension);	
 		} else {
 			res.sendError(HttpServletResponse.SC_NOT_FOUND);
 		}
 	}
 
-	public Run getRun() {
-		return run;
+	public View getView() {
+		return view;
 	}
 
-	public void setRun(Run run) {
-		this.run = run;
+	public void setView(View view) {
+		this.view = view;
+	}
+
+	public JobGraph getWorkflowGraph() {
+		return jobGraph;
+	}
+
+	public void setWorkflowGraph(JobGraph workflowGraph) {
+		this.jobGraph = workflowGraph;
 	}
 
 	@Override
 	public String getIconFileName() {
-        return "clipboard.png";
+		return "clipboard.png";
 	}
 
 	@Override
 	public String getDisplayName() {
-        return "Run Triggers";
+		return "Job Triggers Graph";
 	}
 
 	@Override
 	public String getUrlName() {
-        return "triggers";
+		return "triggers";
 	}
+
 }
