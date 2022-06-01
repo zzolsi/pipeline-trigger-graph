@@ -72,7 +72,7 @@
 		<dependency>
 			<groupId>org.jenkins-ci.plugins.workflow</groupId>
 			<artifactId>workflow-cps</artifactId>
-			<version>2.58</version> <!-- JENKINS-50752 fix is required for writeMavenPom() -->
+			<version>2.65</version> <!-- JENKINS-50752 fix is required for writeMavenPom() -->
 			<optional>true</optional>
 		</dependency>
 		<dependency>
